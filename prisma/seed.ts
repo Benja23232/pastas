@@ -1,68 +1,46 @@
-import { PrismaClient, Categoria, Unidad, TipoMovimiento } from '@prisma/client'
+import { PrismaClient, Categoria, Unidad } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Iniciando carga de datos iniciales (Seed)...')
+  // Limpiamos la base antes de sembrar para evitar duplicados
+  await prisma.movimiento.deleteMany()
+  await prisma.producto.deleteMany()
 
-  const p1 = await prisma.producto.create({
+  await prisma.producto.create({
     data: {
-      nombre: 'Sorrentinos de Jamón y Queso',
+      numero: 1,
+      nombre: 'Ravioles de Ricota',
       categoria: Categoria.RELLENAS,
-      descripcion: 'Caja de sorrentinos artesanales (aprox 12 unidades).',
-      unidad: Unidad.CAJAS,
-      stock: 50,
-      stockMinimo: 15,
-      movimientos: {
-        create: {
-          tipo: TipoMovimiento.ENTRADA,
-          cantidad: 50,
-          stockResultante: 50,
-          nota: 'Stock inicial - Sistema',
-        }
-      }
+      descripcion: 'Producción de la mañana',
+      unidad: Unidad.KG,
+      stock: 5,
     }
   })
 
-  const p2 = await prisma.producto.create({
+  await prisma.producto.create({
     data: {
+      numero: 2,
       nombre: 'Fideos al Huevo',
       categoria: Categoria.PASTA_FRESCA,
-      descripcion: 'Fideos cinta ancha al huevo, venta por peso.',
+      descripcion: 'Caja estándar',
       unidad: Unidad.KG,
-      stock: 12.5,
-      stockMinimo: 20,
-      movimientos: {
-        create: {
-          tipo: TipoMovimiento.ENTRADA,
-          cantidad: 12.5,
-          stockResultante: 12.5,
-          nota: 'Stock inicial - Sistema',
-        }
-      }
+      stock: 12,
     }
   })
 
-  const p3 = await prisma.producto.create({
+  await prisma.producto.create({
     data: {
+      numero: 3,
       nombre: 'Salsa Fileto',
       categoria: Categoria.SALSAS,
-      descripcion: 'Salsa de tomate casera en pote de 500g.',
-      unidad: Unidad.UNIDADES,
-      stock: 30,
-      stockMinimo: 10,
-      movimientos: {
-        create: {
-          tipo: TipoMovimiento.ENTRADA,
-          cantidad: 30,
-          stockResultante: 30,
-          nota: 'Stock inicial - Sistema',
-        }
-      }
+      descripcion: 'Tupper grande heladera central',
+      unidad: Unidad.LITROS,
+      stock: 4,
     }
   })
 
-  console.log('Productos de ejemplo creados exitosamente.')
+  console.log('Datos de prueba cargados correctamente.')
 }
 
 main()
