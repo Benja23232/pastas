@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Categoria {
+  PASTA_FRESCA
+  PASTA_SECA
+  RELLENAS
+  NOQUIS
+  TAPAS_MASAS
+  SALSAS
+  INSUMOS
+  OTROS
+}
+
+enum Unidad {
+  KG
+  GRAMOS     // <-- NUEVO
+  LITROS     // <-- NUEVO
+  UNIDADES
+  PAQUETES
+  CAJAS
+  BANDEJAS
+}
+
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+  AJUSTE
+}
+
+model Producto {
+  id            String       @id @default(uuid())
+  numero        Int?
+  nombre        String
+  categoria     Categoria
+  descripcion   String?
+  unidad        Unidad
+  stock         Float        @default(0)
+  creadoEn      DateTime     @default(now())
+  actualizadoEn DateTime     @updatedAt
+
+  movimientos   Movimiento[]
+}
+
+model Movimiento {
+  id              String         @id @default(uuid())
+  productoId      String
+  tipo            TipoMovimiento
+  cantidad        Float
+  stockResultante Float
+  nota            String?
+  fecha           DateTime       @default(now())
+
+  producto        Producto       @relation(fields: [productoId], references: [id], onDelete: Cascade)
+}
